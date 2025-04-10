@@ -3,13 +3,19 @@ import { TodoList } from "../cmps/TodoList.jsx"
 import { DataTable } from "../cmps/data-table/DataTable.jsx"
 import { todoService } from "../services/todo.service.js"
 import { showErrorMsg, showSuccessMsg } from "../services/event-bus.service.js"
+const { useSelector, useDispatch } = ReactRedux
+
+
+import { loadTodos } from "../store/actions/todo.actions.js"
 
 const { useState, useEffect } = React
 const { Link, useSearchParams } = ReactRouterDOM
 
 export function TodoIndex() {
 
-    const [todos, setTodos] = useState(null)
+    // const [todos, setTodos] = useState(null)
+    const todos = useSelector(storeState => storeState.todos)
+    // TODO: useSelector to subscribe to the store
 
     // Special hook for accessing search-params:
     const [searchParams, setSearchParams] = useSearchParams()
@@ -19,11 +25,14 @@ export function TodoIndex() {
     const [filterBy, setFilterBy] = useState(defaultFilter)
 
     useEffect(() => {
+
+        // loadTodos (action)
         setSearchParams(filterBy)
-        todoService.query(filterBy)
-            .then(todos => setTodos(todos))
+        // todoService.query(filterBy)
+        loadTodos(filterBy)
+            // .then(todos => setTodos(todos))
             .catch(err => {
-                console.eror('err:', err)
+                console.error('Cannot load todos:', err)
                 showErrorMsg('Cannot load todos')
             })
     }, [filterBy])
@@ -45,7 +54,7 @@ export function TodoIndex() {
         todoService.save(todoToSave)
             .then((savedTodo) => {
                 setTodos(prevTodos => prevTodos.map(currTodo => (currTodo._id !== todo._id) ? currTodo : { ...savedTodo }))
-                showSuccessMsg(`Todo is ${(savedTodo.isDone)? 'done' : 'back on your list'}`)
+                showSuccessMsg(`Todo is ${(savedTodo.isDone) ? 'done' : 'back on your list'}`)
             })
             .catch(err => {
                 console.log('err:', err)
