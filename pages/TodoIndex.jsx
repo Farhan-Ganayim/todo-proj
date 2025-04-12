@@ -6,36 +6,40 @@ import { showErrorMsg, showSuccessMsg } from "../services/event-bus.service.js"
 const { useSelector, useDispatch } = ReactRedux
 
 
-import { loadTodos } from "../store/actions/todo.actions.js"
+import { loadTodos, removeTodo } from "../store/actions/todo.actions.js"
 
 const { useState, useEffect } = React
 const { Link, useSearchParams } = ReactRouterDOM
 
 export function TodoIndex() {
 
-    // const [todos, setTodos] = useState(null)
     const todos = useSelector(storeState => storeState.todos)
-    // TODO: useSelector to subscribe to the store
-
-    // Special hook for accessing search-params:
     const [searchParams, setSearchParams] = useSearchParams()
-
     const defaultFilter = todoService.getFilterFromSearchParams(searchParams)
-
     const [filterBy, setFilterBy] = useState(defaultFilter)
 
     useEffect(() => {
 
-        // loadTodos (action)
         setSearchParams(filterBy)
-        // todoService.query(filterBy)
         loadTodos(filterBy)
-            // .then(todos => setTodos(todos))
             .catch(err => {
                 console.error('Cannot load todos:', err)
                 showErrorMsg('Cannot load todos')
             })
     }, [filterBy])
+
+    // function onAddTodo() {
+    //     const todoToSave = todoService.getEmptyTodo()
+
+    //     saveTodo(todoToSave)
+    //       .then(savedTodo => {
+    //         showSuccessMsg(`Todo added (id: ${savedTodo._id})`)
+    //       })
+    //       .catch(err => {
+    //         showErrorMsg('Cannot add todo')
+    //         console.error('Cannot add todo', err)
+    //       })
+    //   }
 
     function onRemoveTodo(todoId) {
         todoService.remove(todoId)
@@ -48,6 +52,18 @@ export function TodoIndex() {
                 showErrorMsg('Cannot remove todo ' + todoId)
             })
     }
+    function onRemoveTodo(todoId) {
+        removeTodo(todoId)
+            .then(() => {
+                console.log('newwwww remove')              
+                showSuccessMsg(`Todo removed`)
+            })
+            .catch(err => {
+                console.log('err:', err)
+                showErrorMsg('Cannot remove todo ' + todoId)
+            })
+    }
+
 
     function onToggleTodo(todo) {
         const todoToSave = { ...todo, isDone: !todo.isDone }

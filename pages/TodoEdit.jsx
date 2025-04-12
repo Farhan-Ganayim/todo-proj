@@ -1,6 +1,8 @@
 import { todoService } from "../services/todo.service.js"
 import { showErrorMsg, showSuccessMsg } from "../services/event-bus.service.js"
 
+import { saveTodo } from "../store/actions/todo.actions.js"
+
 const { useState, useEffect } = React
 const { useNavigate, useParams } = ReactRouterDOM
 
@@ -43,7 +45,7 @@ export function TodoEdit() {
 
     function onSaveTodo(ev) {
         ev.preventDefault()
-        todoService.save(todoToEdit)
+        saveTodo(todoToEdit)
             .then((savedTodo) => {
                 navigate('/todo')
                 showSuccessMsg(`Todo Saved (id: ${savedTodo._id})`)
@@ -53,12 +55,26 @@ export function TodoEdit() {
                 console.log('err:', err)
             })
     }
+    // function onAddTodo() {
+    //     const todoToSave = todoService.getEmptyTodo()
+
+    //     saveTodo(todoToSave)
+    //         .then(savedTodo => {
+    //             navigate('/todo')
+    //             showSuccessMsg(`Todo addddddddddddddddded (id: ${savedTodo._id})`)
+    //         })
+    //         .catch(err => {
+    //             showErrorMsg('Cannot add todo')
+    //             console.error('Cannot add todo', err)
+    //         })
+    // }
 
     const { txt, importance, isDone } = todoToEdit
 
     return (
         <section className="todo-edit">
             <form onSubmit={onSaveTodo} >
+                {/* <form onSubmit={onAddTodo} > */}
                 <label htmlFor="txt">Text:</label>
                 <input onChange={handleChange} value={txt} type="text" name="txt" id="txt" />
 
