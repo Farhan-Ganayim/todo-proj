@@ -70,7 +70,7 @@ function getEmptyCredentials() {
 export function addActivity(txt, todoId) {
     const loggedinUser = getLoggedinUser()
     console.log('uuuuuuuser', loggedinUser)
-    if (!loggedinUser) return Promise.reject('No loggedin user')
+    if (!loggedinUser) Promise.reject('No loggedin user')
     return getById(loggedinUser._id)
         .then(user => {
             if (!user.activities) user.activities = []
