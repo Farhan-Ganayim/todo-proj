@@ -47,8 +47,8 @@ export function TodoEdit() {
         ev.preventDefault()
         saveTodo(todoToEdit)
             .then((savedTodo) => {
-                navigate('/todo')
                 showSuccessMsg(`Todo Saved (id: ${savedTodo._id})`)
+                navigate('/todo')
             })
             .catch(err => {
                 showErrorMsg('Cannot save todo')

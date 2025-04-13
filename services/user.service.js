@@ -6,6 +6,7 @@ export const userService = {
     login,
     logout,
     signup,
+    addActivity,
     getById,
     query,
     getEmptyCredentials
@@ -31,9 +32,14 @@ function login({ username, password }) {
 }
 
 function signup({ username, password, fullname }) {
-    const user = { username, password, fullname }
+    const user = {
+        username,
+        password,
+        fullname,
+        balance: 10000,
+        activities: []
+    }
     user.createdAt = user.updatedAt = Date.now()
-
     return storageService.post(STORAGE_KEY, user)
         .then(_setLoggedinUser)
 }
@@ -48,7 +54,7 @@ function getLoggedinUser() {
 }
 
 function _setLoggedinUser(user) {
-    const userToSave = { _id: user._id, fullname: user.fullname }
+    const userToSave = { _id: user._id, fullname: user.fullname, balance: user.balance, activities: user.activities }
     sessionStorage.setItem(STORAGE_KEY_LOGGEDIN, JSON.stringify(userToSave))
     return userToSave
 }
@@ -60,6 +66,30 @@ function getEmptyCredentials() {
         password: 'muki1',
     }
 }
+
+export function addActivity(txt, todoId) {
+    const loggedinUser = getLoggedinUser()
+    console.log('uuuuuuuser', loggedinUser)
+    if (!loggedinUser) return Promise.reject('No loggedin user')
+    return getById(loggedinUser._id)
+        .then(user => {
+            if (!user.activities) user.activities = []
+            user.activities.push({
+                txt,
+                at: Date.now()
+            })
+            return user
+        })
+        .then(userToUpdate => {
+            return storageService.put(STORAGE_KEY, userToUpdate)
+                .then((savedUser) => {
+                    _setLoggedinUser(savedUser)
+                    return savedUser
+                })
+        })
+}
+
+
 
 // signup({username: 'muki', password: 'muki1', fullname: 'Muki Ja'})
 // login({username: 'muki', password: 'muki1'})
