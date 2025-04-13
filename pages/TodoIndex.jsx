@@ -5,8 +5,7 @@ import { todoService } from "../services/todo.service.js"
 import { showErrorMsg, showSuccessMsg } from "../services/event-bus.service.js"
 const { useSelector, useDispatch } = ReactRedux
 
-
-import { loadTodos, removeTodo } from "../store/actions/todo.actions.js"
+import { loadTodos, removeTodo, saveTodo } from "../store/actions/todo.actions.js"
 
 const { useState, useEffect } = React
 const { Link, useSearchParams } = ReactRouterDOM
@@ -19,7 +18,6 @@ export function TodoIndex() {
     const [filterBy, setFilterBy] = useState(defaultFilter)
 
     useEffect(() => {
-
         setSearchParams(filterBy)
         loadTodos(filterBy)
             .catch(err => {
@@ -29,20 +27,9 @@ export function TodoIndex() {
     }, [filterBy])
 
     function onRemoveTodo(todoId) {
-        todoService.remove(todoId)
-            .then(() => {
-                setTodos(prevTodos => prevTodos.filter(todo => todo._id !== todoId))
-                showSuccessMsg(`Todo removed`)
-            })
-            .catch(err => {
-                console.log('err:', err)
-                showErrorMsg('Cannot remove todo ' + todoId)
-            })
-    }
-    function onRemoveTodo(todoId) {
         removeTodo(todoId)
             .then(() => {
-                console.log('newwwww remove')              
+                console.log('newwwww remove')
                 showSuccessMsg(`Todo removed`)
             })
             .catch(err => {
@@ -50,18 +37,16 @@ export function TodoIndex() {
                 showErrorMsg('Cannot remove todo ' + todoId)
             })
     }
-
 
     function onToggleTodo(todo) {
         const todoToSave = { ...todo, isDone: !todo.isDone }
-        todoService.save(todoToSave)
-            .then((savedTodo) => {
-                setTodos(prevTodos => prevTodos.map(currTodo => (currTodo._id !== todo._id) ? currTodo : { ...savedTodo }))
-                showSuccessMsg(`Todo is ${(savedTodo.isDone) ? 'done' : 'back on your list'}`)
+        saveTodo(todoToSave)
+            .then(() => {
+                showSuccessMsg(`Todo is ${(todoToSave.isDone) ? 'done' : 'back on your list'}`)
             })
             .catch(err => {
                 console.log('err:', err)
-                showErrorMsg('Cannot toggle todo ' + todoId)
+                showErrorMsg('Cannot toggle todo ' + todoToSave._id)
             })
     }
 

@@ -5,7 +5,7 @@ import { login, signup } from '../store/actions/user.actions.js'
 const { useState } = React
 
 export function LoginSignup() {
-    
+
     const [isSignup, setIsSignUp] = useState(false)
     const [credentials, setCredentials] = useState(userService.getEmptyCredentials())
 
@@ -19,21 +19,18 @@ export function LoginSignup() {
         onSubmit(credentials)
     }
 
-
     function onSubmit(credentials) {
         isSignup ? onSignup(credentials) : onLogin(credentials)
     }
 
     function onLogin(credentials) {
         login(credentials)
-            .then(onSetUser)
             .then(() => { showSuccessMsg('Logged in successfully') })
             .catch((err) => { showErrorMsg('Oops try again') })
     }
 
     function onSignup(credentials) {
         signup(credentials)
-            // .then(onSetUser)
             .then(() => { showSuccessMsg('Signed in successfully') })
             .catch((err) => { showErrorMsg('Oops try again') })
     }
