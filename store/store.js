@@ -5,9 +5,12 @@ export const SET_TODOS = 'SET_TODOS'
 export const ADD_TODO = 'ADD_TODO'
 export const UPDATE_TODO = 'UPDATE_TODO'
 export const REMOVE_TODO = 'REMOVE_TODO'
+export const SET_USER = 'SET_USER'
+
 
 const initialState = {
-    todos: []
+    todos: [],
+    user: userService.getLoggedinUser()
 
 }
 
@@ -21,6 +24,10 @@ function appReducer(state = initialState, cmd = {}) {
             return { ...state, todos: state.todos.map(todo => todo._id === cmd.todo._id ? cmd.todo : todo) }
         case REMOVE_TODO:
             return { ...state, todos: state.todos.filter(todo => todo._id !== cmd.todoId) }
+
+        //USER
+        case SET_USER:
+            return { ...state, user: cmd.user }
 
         default:
             return state

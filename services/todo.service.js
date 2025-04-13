@@ -51,7 +51,7 @@ function save(todo) {
         todo.updatedAt = Date.now()
         return storageService.put(TODO_KEY, todo)
     } else {
-        todo.createdAt = todo.updatedAt = Date.now()
+        todo.createdAt = todo.createdAt = Date.now()
 
         return storageService.post(TODO_KEY, todo)
     }

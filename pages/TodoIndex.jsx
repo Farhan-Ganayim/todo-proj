@@ -28,19 +28,6 @@ export function TodoIndex() {
             })
     }, [filterBy])
 
-    // function onAddTodo() {
-    //     const todoToSave = todoService.getEmptyTodo()
-
-    //     saveTodo(todoToSave)
-    //       .then(savedTodo => {
-    //         showSuccessMsg(`Todo added (id: ${savedTodo._id})`)
-    //       })
-    //       .catch(err => {
-    //         showErrorMsg('Cannot add todo')
-    //         console.error('Cannot add todo', err)
-    //       })
-    //   }
-
     function onRemoveTodo(todoId) {
         todoService.remove(todoId)
             .then(() => {
